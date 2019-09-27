@@ -1,0 +1,24 @@
+{
+    "name": "samhwang/docker-php-template",
+    "description": "A PHP Docker project template",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sam Huynh",
+            "email": "samhwang2112.dev@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.3",
+        "vlucas/phpdotenv": "3.*"
+    },
+    "require-dev": {
+        "phing/phing": "2.*",
+        "phpunit/phpunit": "^8.3",
+        "squizlabs/php_codesniffer": "3.*"
+    },
+    "suggest": {
+        "hirak/prestissimo": "*"
+    }
+}
