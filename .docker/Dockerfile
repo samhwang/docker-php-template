@@ -46,6 +46,8 @@ WORKDIR /var/www/html
 COPY . .
 RUN if [ ! -e "$SSLKey" ] && [ ! -e "$SSLCert" ]; then \
         openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/server.key -out /etc/ssl/server.crt -subj "/C=AU/ST=VIC/L=Melbourne/O=Localhost/CN=Localhost"; \
+    else \
+        cp -r .docker/ssl /etc/ssl; \
     fi;
 
 COPY --from=vendor /app/vendor/ ./vendor/
