@@ -14,12 +14,12 @@
         "vlucas/phpdotenv": "3.*"
     },
     "require-dev": {
-        "phing/phing": "2.*",
         "phpunit/phpunit": "^8.3",
         "squizlabs/php_codesniffer": "3.*"
     },
     "suggest": {
-        "hirak/prestissimo": "*"
+        "hirak/prestissimo": "*",
+        "phing/phing": "2.*"
     },
     "autoload": {
         "psr-4": {
