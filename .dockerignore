@@ -1,7 +1,7 @@
 # Docker files
 .dockerignore
 docker-compose.yml
-.docker/mysql/
+.docker/db/
 .docker/Dockerfile
 
 # OS Specific files

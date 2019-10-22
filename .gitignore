@@ -2,8 +2,8 @@
 .DS_Store
 thumbs.db
 
-# Docker MySQL cache, SSL keys and .env
-.docker/mysql/
+# Docker db cache, SSL keys and .env
+.docker/db/
 .docker/apache2/ssl/
 .env
 
