@@ -4,6 +4,7 @@ FROM composer:1.9 as vendor
 ARG ENVIRONMENT=development
 ENV PARAM="--no-dev -o"
 COPY composer.json composer.json
+COPY composer.lock composer.lock
 
 RUN if [ "$ENVIRONMENT" = "development" ]; then \
         PARAM=""; \
