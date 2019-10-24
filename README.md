@@ -5,6 +5,7 @@
 ## Requirements
 
 - PHP >= 7.3
+- Composer
 - Docker
 
 ## Usage in future projects
@@ -15,6 +16,8 @@
 - Remove the `composer.lock` entry from `.gitignore` file.
 - Remove the whole `.git` folder, and reinitialize the project.
 - Copy the `.env.sample` file into `.env` and put in your db credentials.
+- In `composer.json`, change the Project type from `library` to `project`,
+  and change the version number to exact numbers.
 - Build the local docker image (see instructions below).
 
 ```bash
