@@ -9,7 +9,6 @@ COPY composer.lock composer.lock
 RUN if [ "$ENVIRONMENT" = "development" ]; then \
         PARAM=""; \
     fi; \
-    composer global require hirak/prestissimo; \
     composer install \
     --ignore-platform-reqs \
     --no-interaction \
@@ -49,6 +48,7 @@ RUN if [ ! -e "$SSLKey" ] && [ ! -e "$SSLCert" ]; then \
         openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/server.key -out /etc/ssl/server.crt -subj "/C=AU/ST=VIC/L=Melbourne/O=Localhost/CN=Localhost"; \
     else \
         cp -r .docker/ssl /etc/ssl; \
-    fi;
+    fi; \
+    rm -rf .docker;
 
 COPY --from=vendor /app/vendor/ ./vendor/

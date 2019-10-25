@@ -14,5 +14,5 @@ thumbs.db
 *.sample
 *.md
 LICENSE
-.env
+*.env*
 vendor/
