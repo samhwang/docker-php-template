@@ -14,11 +14,12 @@
         "vlucas/phpdotenv": "3.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.3",
+        "phpmd/phpmd": "2.*",
+        "phpunit/phpunit": "8.*",
+        "sebastian/phpcpd": "4.*",
         "squizlabs/php_codesniffer": "3.*"
     },
     "suggest": {
-        "hirak/prestissimo": "*",
         "phing/phing": "2.*"
     },
     "autoload": {
