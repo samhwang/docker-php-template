@@ -31,5 +31,11 @@
         "psr-4": {
             "App\\": "tests/App"
         }
+    },
+    "config": {
+        "platform": {
+            "php": "7.3"
+        },
+        "sort-packages": true
     }
 }

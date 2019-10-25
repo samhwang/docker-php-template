@@ -5,16 +5,14 @@ COPY composer.json composer.json
 COPY composer.lock composer.lock
 
 RUN composer install \
-    --ignore-platform-reqs \
     --no-interaction \
     --no-plugins \
-    --no-scripts \
     --prefer-dist \
-    --ignore-platform-reqs \
     --no-dev \
     --optimize-autoloader \
     --classmap-authoritative
 
+# Production Image
 FROM samhwang/php:7.3
 LABEL maintainer="Sam Huynh <samhwang2112.dev@gmail.com>"
 
@@ -31,6 +29,6 @@ RUN if [ ! -e "$SSLKey" ] && [ ! -e "$SSLCert" ]; then \
     fi; \
     rm -rf .docker;
 
-COPY ./public ./public
-COPY ./src ./src
+COPY --from=project_name:development /var/www/html/public ./public
+COPY --from=project_name:development /var/www/html/src ./src
 COPY --from=vendor /app/vendor/ ./vendor/
