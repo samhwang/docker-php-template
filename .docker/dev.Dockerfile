@@ -1,46 +1,31 @@
 # Composer dependencies
 FROM composer:1.9 as vendor
 
-ARG ENVIRONMENT=development
-ENV PARAM="--no-dev -o"
 COPY composer.json composer.json
 COPY composer.lock composer.lock
 
-RUN if [ "$ENVIRONMENT" = "development" ]; then \
-    PARAM=""; \
-    fi; \
-    composer install \
-    --ignore-platform-reqs \
+RUN composer install \
     --no-interaction \
     --no-plugins \
-    --no-scripts \
-    --prefer-dist \
-    --ignore-platform-reqs \
-    ${PARAM}
+    --prefer-dist
 
-# The project image
+# Development Image
 FROM samhwang/php:7.3
 LABEL maintainer="Sam Huynh <samhwang2112.dev@gmail.com>"
 
-ARG ENVIRONMENT=development
-ARG XDEBUG_ENABLE=true
 ENV SSLKey=".docker/ssl/server.key"
 ENV SSLCert=".docker/ssl/server.crt"
 
 # Dev environment config: MailHog SMTP, SSL Keys and XDebug
-RUN if [ "$ENVIRONMENT" = 'development' ]; then \
-    curl -LkSso /usr/bin/mhsendmail 'https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64' && \
+RUN curl -LkSso /usr/bin/mhsendmail 'https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64' && \
     chmod 0755 /usr/bin/mhsendmail && \
-    echo 'sendmail_path = "/usr/bin/mhsendmail --smtp-addr=mailhog:1025"' > /usr/local/etc/php/php.ini; \
-    if [ "$XDEBUG_ENABLE" = true ]; then \
+    echo 'sendmail_path = "/usr/bin/mhsendmail --smtp-addr=mailhog:1025"' > /usr/local/etc/php/php.ini && \
     pecl install xdebug && \
     docker-php-ext-enable xdebug && \
     echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
-    echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
-    fi; \
-    fi;
+    echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
 
 WORKDIR /var/www/html
 COPY . .
