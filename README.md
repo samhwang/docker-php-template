@@ -29,31 +29,15 @@ git init .
 cp .env.sample .env
 ```
 
-## Building the project image
+## Building the development image
 
 ```bash
 git clone git@github.com:samhwang/docker-php-template.git [YOUR_PROJECT_DIRECTORY]
 cd [YOUR_PROJECT_DIRECTORY]
-
-# Either run the Docker build command
-docker build -f .docker/Dockerfile -t [YOUR_PROJECT_NAME] .
-
-# Or run the docker-compose build command
 docker-compose build
 ```
 
-You can also add build arguments for environment such as
-`staging` and `production`, or you can edit the arguments in
-the `docker-compose.yml` file.
-
-```bash
-docker build -f .docker/Dockerfile -t [YOUR_PROJECT_NAME]:latest \
-    --build-arg ENVIRONMENT=[development,staging,production] \
-    --build-arg XDEBUG_ENABLE=[true,false] \
-    .
-```
-
-By default upon building the image, it will check if there
+Upon building the image, it will check if there
 already exists a pair of SSL key files and certificate. If not,
 it will generate one. To generate your own pair of self-signed
 SSL keys, you can run:
@@ -62,8 +46,13 @@ SSL keys, you can run:
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout .docker/ssl/server.key -out .docker/ssl/server.crt
 ```
 
-It also integrates mailhog for development environment so it
-does not spam people emails excessively.
+### Building the production image
+
+- Uncomment the `www01_production` service and comment out the `www01` service.
+- Run the build command.
+
+>Note: Only one of these services should be uncommented at a time, and the
+>development image must exist before creating the production image.
 
 ## Composing the network
 
