@@ -54,6 +54,12 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout .docker/ssl/server.k
 >Note: Only one of these services should be uncommented at a time, and the
 >development image must exist before creating the production image.
 
+```bash
+docker container prune -f
+docker-compose build www01_production
+docker-compose up
+```
+
 ## Composing the network
 
 To run the image and connect it with the rest of the network
