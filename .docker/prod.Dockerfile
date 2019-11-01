@@ -3,6 +3,7 @@ FROM composer:1.9 as vendor
 
 COPY composer.json composer.json
 COPY composer.lock composer.lock
+COPY ./src ./src
 
 RUN composer install \
     --no-interaction \
@@ -29,6 +30,6 @@ RUN if [ ! -e "$SSLKey" ] && [ ! -e "$SSLCert" ]; then \
     fi; \
     rm -rf .docker;
 
-COPY --from=project_name:development /var/www/html/public ./public
-COPY --from=project_name:development /var/www/html/src ./src
+COPY ./public ./public
+COPY ./src ./src
 COPY --from=vendor /app/vendor/ ./vendor/
