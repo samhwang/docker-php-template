@@ -1,17 +1,18 @@
-# Composer dependencies
-FROM composer:1.9 as vendor
+# Development image
+FROM samhwang/php:7.3 as development
+LABEL maintainer="Sam Huynh <samhwang2112.dev@gmail.com>"
 
-COPY composer.json composer.json
-COPY composer.lock composer.lock
+WORKDIR /var/www/html
+
+# Install composer dependencies
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY composer.json composer.lock ./
 
 RUN composer install \
     --no-interaction \
     --no-plugins \
-    --prefer-dist
-
-# Development Image
-FROM samhwang/php:7.3
-LABEL maintainer="Sam Huynh <samhwang2112.dev@gmail.com>"
+    --prefer-dist; \
+    composer clear-cache
 
 ENV SSLKey=".docker/ssl/server.key"
 ENV SSLCert=".docker/ssl/server.crt"
@@ -21,13 +22,13 @@ RUN curl -LkSso /usr/bin/mhsendmail 'https://github.com/mailhog/mhsendmail/relea
     chmod 0755 /usr/bin/mhsendmail && \
     echo 'sendmail_path = "/usr/bin/mhsendmail --smtp-addr=mailhog:1025"' > /usr/local/etc/php/php.ini && \
     pecl install xdebug && \
+    pecl clear-cache && \
     docker-php-ext-enable xdebug && \
     echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini;
 
-WORKDIR /var/www/html
 COPY . .
 RUN if [ ! -e "$SSLKey" ] && [ ! -e "$SSLCert" ]; then \
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/server.key -out /etc/ssl/server.crt -subj "/C=AU/ST=VIC/L=Melbourne/O=Localhost/CN=Localhost"; \
@@ -36,4 +37,35 @@ RUN if [ ! -e "$SSLKey" ] && [ ! -e "$SSLCert" ]; then \
     fi; \
     rm -rf .docker;
 
-COPY --from=vendor /app/vendor/ ./vendor/
+# Build for production
+FROM development as build
+
+RUN composer install \
+    --no-interaction \
+    --no-plugins \
+    --prefer-dist \
+    --no-dev \
+    --optimize-autoloader \
+    --classmap-authoritative; \
+    composer clear-cache;
+
+# Production image
+FROM samhwang/php:7.3 as production
+LABEL maintainer="Sam Huynh <samhwang2112.dev@gmail.com>"
+
+ENV SSLKey=".docker/ssl/server.key"
+ENV SSLCert=".docker/ssl/server.crt"
+
+WORKDIR /var/www/html
+
+COPY ./.docker/ssl ./.docker/ssl
+RUN if [ ! -e "$SSLKey" ] && [ ! -e "$SSLCert" ]; then \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/server.key -out /etc/ssl/server.crt -subj "/C=AU/ST=VIC/L=Melbourne/O=Localhost/CN=Localhost"; \
+    else \
+    cp -r .docker/ssl /etc/ssl; \
+    fi; \
+    rm -rf .docker;
+
+COPY ./public ./public
+COPY ./src ./src
+COPY --from=build /var/www/html/vendor/ ./vendor/

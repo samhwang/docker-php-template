@@ -18,6 +18,7 @@
 - Copy the `.env.sample` file into `.env` and put in your db credentials.
 - In `composer.json`, change the Project type from `library` to `project`,
   and change the version number to exact numbers.
+- Install composer dependencies
 - Build the local docker image (see instructions below).
 
 ```bash
@@ -27,6 +28,7 @@ cd [YOUR_PROJECT_DIRECTORY]
 rm -rf .git
 git init .
 cp .env.sample .env
+composer install
 ```
 
 ## Building the development image
@@ -48,17 +50,8 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout .docker/ssl/server.k
 
 ### Building the production image
 
-- Uncomment the `www01_production` service and comment out the `www01` service.
-- Run the build command.
-
->Note: Only one of these services should be uncommented at a time, and the
->development image must exist before creating the production image.
-
-```bash
-docker container prune -f
-docker-compose build www01_production
-docker-compose up
-```
+Change the `ENVIRONMENT` variable in the `.env` file to
+`production` and rebuild the image.
 
 ## Composing the network
 
