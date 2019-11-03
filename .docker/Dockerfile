@@ -10,7 +10,7 @@ RUN composer install \
     --prefer-dist
 
 # Development Image
-FROM samhwang/php:7.3
+FROM samhwang/php:7.3 as development
 LABEL maintainer="Sam Huynh <samhwang2112.dev@gmail.com>"
 
 ENV SSLKey=".docker/ssl/server.key"
@@ -36,4 +36,38 @@ RUN if [ ! -e "$SSLKey" ] && [ ! -e "$SSLCert" ]; then \
     fi; \
     rm -rf .docker;
 
+COPY --from=vendor /app/vendor/ ./vendor/
+
+# Build for production
+FROM vendor
+
+COPY ./src ./src
+
+RUN composer install \
+    --no-interaction \
+    --no-plugins \
+    --prefer-dist \
+    --no-dev \
+    --optimize-autoloader \
+    --classmap-authoritative
+
+# Production image
+FROM samhwang/php:7.3 as production
+LABEL maintainer="Sam Huynh <samhwang2112.dev@gmail.com>"
+
+ENV SSLKey=".docker/ssl/server.key"
+ENV SSLCert=".docker/ssl/server.crt"
+
+WORKDIR /var/www/html
+
+COPY ./.docker/ssl ./.docker/ssl
+RUN if [ ! -e "$SSLKey" ] && [ ! -e "$SSLCert" ]; then \
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/server.key -out /etc/ssl/server.crt -subj "/C=AU/ST=VIC/L=Melbourne/O=Localhost/CN=Localhost"; \
+    else \
+    cp -r .docker/ssl /etc/ssl; \
+    fi; \
+    rm -rf .docker;
+
+COPY ./public ./public
+COPY ./src ./src
 COPY --from=vendor /app/vendor/ ./vendor/
