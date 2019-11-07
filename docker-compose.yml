@@ -4,16 +4,11 @@ services:
         build:
             context: .
             dockerfile: ".docker/Dockerfile"
-            target: ${ENVIRONMENT}
         container_name: project_name_www01
         env_file: ".env"
-        image: project_name:${ENVIRONMENT}
         ports:
             - "80:80"
             - "443:443"
-        volumes:
-            - .:/var/www/html
-            - 'var/www/html/vendor'
     db:
         container_name: project_name_db
         env_file: ".env"
@@ -24,14 +19,3 @@ services:
         restart: always
         volumes:
             - .docker/db/storage:/var/lib/mysql:cached
-    adminer:
-        image: adminer:4.7.4
-        ports:
-            - "8080:8080"
-        restart: always
-    mailhog:
-        image: mailhog/mailhog:latest
-        ports:
-            - "1025:1025"
-            - "8025:8025"
-        restart: always

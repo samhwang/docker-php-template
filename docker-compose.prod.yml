@@ -1,0 +1,6 @@
+version: "3.7"
+services:
+    www01:
+        build:
+            target: production
+        image: project_name:production

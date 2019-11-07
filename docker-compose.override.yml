@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+    www01:
+        build:
+            target: development
+        image: project_name:development
+        volumes:
+            - .:/var/www/html
+            - "var/www/html/vendor"
+    adminer:
+        image: adminer:4.7.4
+        ports:
+            - "8080:8080"
+        restart: always
+    mailhog:
+        image: mailhog/mailhog:latest
+        ports:
+            - "1025:1025"
+            - "8025:8025"
+        restart: always

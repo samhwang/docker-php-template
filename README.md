@@ -50,8 +50,10 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout .docker/ssl/server.k
 
 ### Building the production image
 
-Change the `ENVIRONMENT` variable in the `.env` file to
-`production` and rebuild the image.
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --remove-orphans
+```
 
 ## Composing the network
 
