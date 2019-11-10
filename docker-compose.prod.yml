@@ -3,4 +3,9 @@ services:
     www01:
         build:
             target: production
+        container_name: project_name_www01
         image: project_name:production
+        restart: always
+    db:
+        container_name: project_name_db
+        restart: always

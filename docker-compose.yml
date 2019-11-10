@@ -4,18 +4,15 @@ services:
         build:
             context: .
             dockerfile: ".docker/Dockerfile"
-        container_name: project_name_www01
         env_file: ".env"
         ports:
             - "80:80"
             - "443:443"
     db:
-        container_name: project_name_db
+        command: --default-authentication-plugin=mysql_native_password
         env_file: ".env"
         image: mysql:8.0
-        command: --default-authentication-plugin=mysql_native_password
         ports:
             - "3306:3306"
-        restart: always
         volumes:
             - .docker/db/storage:/var/lib/mysql:cached
