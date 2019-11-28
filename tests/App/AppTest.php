@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PHP version 7.3
+ * PHP version 7.4
  *
  * @package Project_Name
  * @author  Sam Huynh <samhwang2112.dev@gmail.com>
