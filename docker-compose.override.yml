@@ -14,7 +14,7 @@ services:
         restart: unless-stopped
     adminer:
         container_name: project_name_adminer_dev
-        image: adminer:4.7.4
+        image: adminer:4.7.5
         ports:
             - "8080:8080"
         restart: unless-stopped
