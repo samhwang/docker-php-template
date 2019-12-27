@@ -1,12 +1,12 @@
 {
-    "name": "samhwang/docker-php-template",
-    "description": "A PHP Docker project template",
-    "type": "library",
+    "name": "project_name",
+    "description": "project_description",
+    "type": "project",
     "license": "MIT",
     "authors": [
         {
-            "name": "Sam Huynh",
-            "email": "samhwang2112.dev@gmail.com"
+            "name": "author_name",
+            "email": "author_email@mail.com"
         }
     ],
     "require": {
@@ -21,7 +21,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Setup\\": "scripts"
+            "App\\": "src/App"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\": "tests/App"
         }
     },
     "config": {
@@ -31,8 +36,6 @@
         "sort-packages": true
     },
     "scripts": {
-        "setup": [
-            "Setup\\Installer::postInstall"
-        ]
+        "test": "vendor/bin/phpunit tests"
     }
 }

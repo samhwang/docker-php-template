@@ -5,37 +5,23 @@
 ## Requirements
 
 - PHP >= 7.4
-- Composer
-- Docker
+- Composer >= 1.9
+- Docker & docker-compose
 
 ## Usage in future projects
 
 - Clone the project.
-- Find and replace all of the `docker-php-template`, `project_name` with
-  your desired project name.
-- Remove the `composer.lock` entry from `.gitignore` file.
-- Remove the whole `.git` folder, and reinitialize the project.
-- Copy the `.env.sample` file into `.env` and put in your db credentials.
-- In `composer.json`, change the Project type from `library` to `project`,
-  and change the version number to exact numbers.
-- Install composer dependencies
-- Build the local docker image (see instructions below).
+- Run the composer setup command.
 
 ```bash
 git clone git@github.com:samhwang/docker-php-template.git [YOUR_PROJECT_DIRECTORY]
 cd [YOUR_PROJECT_DIRECTORY]
-
-rm -rf .git
-git init .
-cp .env.sample .env
-composer install
+composer run setup
 ```
 
 ## Building the development image
 
 ```bash
-git clone git@github.com:samhwang/docker-php-template.git [YOUR_PROJECT_DIRECTORY]
-cd [YOUR_PROJECT_DIRECTORY]
 docker-compose build
 ```
 
