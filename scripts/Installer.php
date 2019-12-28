@@ -33,7 +33,7 @@ class Installer
         $io->write('<info>Creating project from boilerplate</info>');
 
         // Initiate project configurations
-        $init_config = $io->askConfirmation('Initiate configs ? [y/N] ', false);
+        $init_config = $io->askConfirmation('Initiate configs? [y/N] ', false);
         if ($init_config) {
             self::_initiateConfig($io);
         }
@@ -58,7 +58,7 @@ class Installer
     {
         self::_makeEnvFile($io);
 
-        $compose_setup = $io->askConfirmation('Do you want to set up project information? [y/N]: ', false);
+        $compose_setup = $io->askConfirmation('Do you want to set up project information? [y/n] ', false);
         if ($compose_setup) {
             $name = $io->ask('Project Name [project_name]: ', 'project_name');
             $description = $io->ask('Description: ', 'project_description');
@@ -89,7 +89,7 @@ class Installer
         copy('.env.sample', '.env');
         $env_file = '.env';
         $env_content = file_get_contents('.env.sample');
-        $db_setup = $io->askConfirmation('Do you want to set up database connection ? [y/N]: ', false);
+        $db_setup = $io->askConfirmation('Do you want to set up database connection? [y/n] ', false);
         if ($db_setup) {
             $db_host = $io->ask('Please enter database host [db]: ', 'db');
             $db_name = $io->ask('Please enter database name [project_db]: ', 'project_db');
@@ -219,8 +219,39 @@ class Installer
             $io->write('If you are on a Mac or Windows machine, please visit Docker Desktop CE at https://www.docker.com/products/docker-desktop.');
             $io->write('Linux machines are a bit more complex on installation. Go here: https://docs.docker.com/install/linux/docker-ce/ubuntu/.');
         } else {
-            passthru('docker-compose pull');
-            passthru('docker-compose build');
+            self::_buildDocker($io);
         }
+    }
+
+    /**
+     * Build Docker assets
+     * 
+     * @param IOInterface $io - Composer IOInterface instance
+     * 
+     * @return void
+     */
+    private static function _buildDocker(IOInterface $io): void
+    {
+        $dockerfile = '.docker/Dockerfile';
+
+        $useAlpine = $io->askConfirmation('Do you want to use Alpine OS in the container instead of Debian? [y/N] ', false);
+        if ($useAlpine) {
+            unlink($dockerfile);
+            rename('.docker/Alpine.Dockerfile', $dockerfile);
+        } else {
+            unlink('.docker/Alpine.Dockerfile');
+        }
+
+        $useNginx = $io->askConfirmation('Do you want to use NGINX instead of Apache server? [y/N] ', false);
+        if ($useNginx) {
+            $content = file_get_contents($dockerfile);
+            $content = str_replace('apache', 'nginx', $content);
+            file_put_contents($dockerfile, $content);
+        }
+
+        exec("git add .docker; git commit --amend -m \"Initial commit\"");
+
+        passthru('docker-compose pull');
+        passthru('docker-compose build');
     }
 }
