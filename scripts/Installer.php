@@ -147,15 +147,20 @@ class Installer
     {
         unlink('composer.json');
         copy('composer.dist.json', 'composer.json');
+
         $file = 'composer.json';
         $content = file_get_contents($file);
-
         $content = str_replace('project_name', $projectInfo['name'], $content);
         $content = str_replace('project_description', $projectInfo['description'], $content);
         $content = str_replace('author_name', $projectInfo['author'], $content);
         $content = str_replace('author_email@mail.com', $projectInfo['email'], $content);
-
         file_put_contents($file, $content);
+
+        $license = 'LICENSE';
+        $content = file_get_contents($license);
+        $content = str_replace('Sam Huynh', $projectInfo['author'], $content);
+        $content = str_replace('2019', date('Y'), $content);
+        file_put_contents($license, $content);
     }
 
     /**
