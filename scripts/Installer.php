@@ -14,7 +14,7 @@ use Composer\IO\IOInterface;
 
 /**
  * Installer class
- * 
+ *
  * @package Docker_PHP_Template
  * @author  Sam Huynh <samhwang2112.dev@gmail.com>
  */
@@ -24,7 +24,7 @@ class Installer
      * Post install function
      *
      * @param Event $event - Composer event
-     * 
+     *
      * @return void
      */
     public static function postInstall(Event $event = null): void
@@ -43,15 +43,15 @@ class Installer
 
         $io->write('<info>Boilerplate initialized.</info>');
 
-        self::_build();
+        self::_build($io);
         $io->write('<info>Build complete.</info>');
     }
 
     /**
      * Initiate new project's configurations
-     * 
+     *
      * @param IOInterface $io - Composer IOInterface instance
-     * 
+     *
      * @return void
      */
     private static function _initiateConfig(IOInterface $io): void
@@ -79,9 +79,9 @@ class Installer
 
     /**
      * Create Env File function
-     * 
+     *
      * @param IOInterface $io - Composer IOInterface instance
-     * 
+     *
      * @return void
      */
     private static function _makeEnvFile(IOInterface $io): void
@@ -106,7 +106,7 @@ class Installer
 
     /**
      * Clean up after finishing installation
-     * 
+     *
      * @return void
      */
     private static function _cleanup(): void
@@ -118,7 +118,7 @@ class Installer
 
     /**
      * Inititate git repository
-     * 
+     *
      * @return void
      */
     private static function _initiateGit(): void
@@ -138,9 +138,9 @@ class Installer
 
     /**
      * Create new composer.json declaration file
-     * 
+     *
      * @param string[] $projectInfo - project information
-     * 
+     *
      * @return void
      */
     private static function _makeNewComposerFile(array $projectInfo): void
@@ -165,9 +165,9 @@ class Installer
 
     /**
      * Rename project_name with the actual Project Name
-     * 
+     *
      * @param string $projectName - project name
-     * 
+     *
      * @return void
      */
     private static function _renamePackage(string $projectName): void
@@ -186,33 +186,41 @@ class Installer
         }
     }
 
-    /** 
+    /**
      * Convert snake_case to Snake_Case
-     * 
+     *
      * @param string $projectName - project name
-     * 
+     *
      * @return string
      */
     private static function _convertCamelCase(string $projectName): string
     {
         $string_array = explode('_', $projectName);
-        array_walk($string_array, fn(string $elem): string => ucwords($elem));
+        array_walk($string_array, fn (string $elem): string => ucwords($elem));
         return implode('_', $string_array);
     }
 
     /**
      * Build project dependencies
-     * 
+     *
+     * @param IOInterface $io - Composer IOInterface instance
+     *
      * @return void
      */
-    private static function _build(): void
+    private static function _build(IOInterface $io): void
     {
         // Install composer dependencies
         passthru('composer install');
         exec("git add composer.lock; git commit --amend -m \"Initial commit\"");
 
         // Build Docker images
-        passthru('docker-compose pull');
-        passthru('docker-compose build');
+        if (`which docker` === false && `which docker-compose` === false) {
+            $io->write('<warning>Docker and/or docker-compose is not installed on your machine.</warning>');
+            $io->write('If you are on a Mac or Windows machine, please visit Docker Desktop CE at https://www.docker.com/products/docker-desktop.');
+            $io->write('Linux machines are a bit more complex on installation. Go here: https://docs.docker.com/install/linux/docker-ce/ubuntu/.');
+        } else {
+            passthru('docker-compose pull');
+            passthru('docker-compose build');
+        }
     }
 }

@@ -3,7 +3,8 @@
 ![GitHub](https://img.shields.io/github/license/samhwang/docker-php-template?style=for-the-badge)
 
 Basically a boilerplate to setup a PHP7 project with common tools such as Composer and PHPUnit and
-a Docker container environment setup.
+a Docker container environment setup. From that point, it can be a project on its own or running
+as a backend service in a microservices configuration.
 
 ## Requirements
 
