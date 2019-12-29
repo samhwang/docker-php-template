@@ -251,6 +251,10 @@ class Installer
 
         exec("git add .docker; git commit --amend -m \"Initial commit\"");
 
+        if (!file_exists('.env')) {
+            copy('.env.sample', '.env');
+        }
+
         passthru('docker-compose pull');
         passthru('docker-compose build');
     }
