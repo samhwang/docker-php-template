@@ -1,5 +1,5 @@
 # Development image
-FROM samhwang/php:7.4-apache as development
+FROM samhwang/php:7.4 as development
 LABEL maintainer="Sam Huynh <samhwang2112.dev@gmail.com>"
 
 WORKDIR /var/www/html

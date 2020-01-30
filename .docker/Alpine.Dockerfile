@@ -1,5 +1,5 @@
 # Development image
-FROM samhwang/php:7.4-apache-alpine as development
+FROM samhwang/php:7.4-alpine as development
 LABEL maintainer="Sam Huynh <samhwang2112.dev@gmail.com>"
 
 WORKDIR /var/www/html
@@ -52,7 +52,7 @@ RUN composer install \
     composer clear-cache;
 
 # Production image
-FROM samhwang/php:7.4 as production
+FROM samhwang/php:7.4-alpine as production
 LABEL maintainer="Sam Huynh <samhwang2112.dev@gmail.com>"
 
 ENV SSLKey=".docker/ssl/server.key"
