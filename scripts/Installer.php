@@ -111,7 +111,6 @@ class Installer
      */
     private static function _cleanup(): void
     {
-        unlink('composer.dist.json');
         unlink('README.md');
         exec('rm -rf scripts');
     }
@@ -147,6 +146,7 @@ class Installer
     {
         unlink('composer.json');
         copy('composer.dist.json', 'composer.json');
+        unlink('composer.dist.json');
 
         $file = 'composer.json';
         $content = file_get_contents($file);
