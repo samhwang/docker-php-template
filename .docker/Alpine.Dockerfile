@@ -5,7 +5,7 @@ LABEL maintainer="Sam Huynh <samhwang2112.dev@gmail.com>"
 WORKDIR /var/www/html
 
 # Install composer dependencies
-COPY --from=composer:1.9.1 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:1.9.2 /usr/bin/composer /usr/bin/composer
 COPY composer.json composer.lock ./
 
 RUN composer install \
@@ -17,18 +17,18 @@ RUN composer install \
 ENV SSLKey=".docker/ssl/server.key"
 ENV SSLCert=".docker/ssl/server.crt"
 
-# Dev environment config: MailHog SMTP, SSL Keys and XDebug
+# Dev environment config: MailHog SMTP, SSL Keys and PCOV
 RUN curl -LkSso /usr/bin/mhsendmail 'https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64' && \
     chmod 0755 /usr/bin/mhsendmail && \
-    echo 'sendmail_path = "/usr/bin/mhsendmail --smtp-addr=mailhog:1025"' > /usr/local/etc/php/php.ini && \
+    echo 'sendmail_path = "/usr/bin/mhsendmail --smtp-addr=mailhog:1025"' >> /usr/local/etc/php/php.ini && \
     apk update && apk add --no-cache --virtual build-deps ${PHPIZE_DEPS} && \
-    pecl install xdebug && \
+    pecl install pcov && \
     pecl clear-cache && \
-    docker-php-ext-enable xdebug && \
-    echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
-    echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
-    echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
-    echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini; \
+    echo "error_reporting = E_ALL" >> /usr/local/etc/php/php.ini && \
+    echo "display_startup_errors = On" >> /usr/local/etc/php/php.ini && \
+    echo "display_errors = On" >> /usr/local/etc/php/php.ini && \
+    echo "pcov.directory = /var/www/html/src" >> /usr/local/etc/php/php.ini && \
+    echo "pcov.exclude = /var/www/html/vendor" >> /usr/local/etc/php/php.ini; \
     apk del build-deps;
 
 COPY . .

@@ -36,6 +36,7 @@
         "sort-packages": true
     },
     "scripts": {
-        "test": "vendor/bin/phpunit tests"
+        "test": "phpdbg -qrr ./vendor/bin/phpunit tests",
+        "code-coverage": "php -d pcov.enabled=1 ./vendor/bin/phpunit tests"
     }
 }
