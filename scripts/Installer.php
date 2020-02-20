@@ -72,7 +72,6 @@ class Installer
             ];
         }
         $io->write('<info>This can be edited later in the composer.json and docker-compose files.</info>');
-        self::_renamePackage($name);
         self::_makeNewComposerFile($projectInfo);
         self::_renamePackage($name);
     }
