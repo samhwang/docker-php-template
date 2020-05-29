@@ -5,7 +5,7 @@ LABEL maintainer="Sam Huynh <samhwang2112.dev@gmail.com>"
 WORKDIR /var/www/html
 
 # Install composer dependencies
-COPY --from=composer:1.9.2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:1.10.6 /usr/bin/composer /usr/bin/composer
 COPY composer.json composer.lock ./
 
 RUN composer install \
