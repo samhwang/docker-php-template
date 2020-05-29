@@ -24,6 +24,7 @@ class AppTest extends TestCase
      */
     public function testHello(): void
     {
-        $this->assertEquals('Hello World.', App::sayHello());
+        $app = new App();
+        $this->assertEquals('Hello World.', $app->sayHello());
     }
 }

@@ -19,7 +19,7 @@ class App
      * 
      * @return bool
      */
-    public static function showPhpInfo(): bool
+    public function showPhpInfo(): bool
     {
         return phpinfo();
     }
@@ -29,7 +29,7 @@ class App
      * 
      * @return string
      */
-    public static function sayHello(): string
+    public function sayHello(): string
     {
         return 'Hello World.';
     }
