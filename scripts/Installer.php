@@ -33,10 +33,7 @@ class Installer
         $io->write('<info>Creating project from boilerplate</info>');
 
         // Initiate project configurations
-        $init_config = $io->askConfirmation('Initiate configs? [y/N] ', false);
-        if ($init_config) {
-            self::_initiateConfig($io);
-        }
+        self::_initiateConfig($io);
 
         self::_cleanup();
         self::_initiateGit();
