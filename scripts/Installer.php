@@ -55,21 +55,19 @@ class Installer
     {
         self::_makeEnvFile($io);
 
-        $compose_setup = $io->askConfirmation('Do you want to set up project information? [y/n] ', false);
-        if ($compose_setup) {
-            $name = $io->ask('Project Name [project_name]: ', 'project_name');
-            $description = $io->ask('Description: ', 'project_description');
-            $author = $io->ask('Author name: ', 'author_name');
-            $email = $io->ask('Author email [must be valid email]: ', 'author_email@mail.com');
-            $projectInfo = [
-                'name' => $name,
-                'description' => $description,
-                'author' => $author,
-                'email' => $email
-            ];
-        }
-        $io->write('<info>This can be edited later in the composer.json and docker-compose files.</info>');
+        $name = $io->ask('Project Name [project_name]: ', 'project_name');
+        $description = $io->ask('Description: ', 'project_description');
+        $author = $io->ask('Author name: ', 'author_name');
+        $email = $io->ask('Author email [must be valid email]: ', 'author_email@mail.com');
+        $projectInfo = [
+            'name' => $name,
+            'description' => $description,
+            'author' => $author,
+            'email' => $email
+        ];
         self::_makeNewComposerFile($projectInfo);
+
+        $io->write('<info>This can be edited later in the composer.json and docker-compose files.</info>');
         self::_renamePackage($name);
     }
 
