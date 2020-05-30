@@ -10,7 +10,7 @@
 namespace App;
 
 use PHPUnit\Framework\TestCase;
-use App\App;
+use DI\Container;
 
 /**
  * Main App Test class
@@ -24,7 +24,8 @@ class AppTest extends TestCase
      */
     public function testHello(): void
     {
-        $app = new App();
+        $container = new Container();
+        $app = $container->get('App\App');
         $this->assertEquals('Hello World.', $app->sayHello());
     }
 }

@@ -2,7 +2,8 @@
 
 require_once __DIR__ . '/autoload.php';
 
-use App\App;
+use DI\Container;
 
-$app = new App();
+$container = new Container();
+$app = $container->get('App\App');
 echo $app->sayHello();
