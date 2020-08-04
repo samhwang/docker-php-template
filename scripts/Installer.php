@@ -60,12 +60,14 @@ class Installer
     {
         self::_makeEnvFile($io);
 
-        $name = $io->ask('Project Name [project_name]: ', 'project_name');
+        $name = $io->ask('Project Name [format: project_name]: ', 'project_name');
+        $vendor = $io->ask('Vendor name [format: vendor_name]: ', 'vendor_name');
         $description = $io->ask('Description: ', 'project_description');
         $author = $io->ask('Author name: ', 'author_name');
         $email = $io->ask('Author email [must be valid email]: ', 'author_email@mail.com');
         $projectInfo = [
             'name' => $name,
+            'vendor' => $vendor,
             'description' => $description,
             'author' => $author,
             'email' => $email
@@ -88,7 +90,7 @@ class Installer
         copy(self::SOURCE_CODE_DIR . '.env.sample', self::SOURCE_CODE_DIR . '.env');
         $env_file = self::SOURCE_CODE_DIR . '.env';
         $env_content = file_get_contents(self::SOURCE_CODE_DIR . '.env.sample');
-        $db_setup = $io->askConfirmation('Do you want to set up database connection? [y/n] ', false);
+        $db_setup = $io->askConfirmation('Do you want to set up database connection? [y/N] ', false);
         if ($db_setup) {
             $db_host = $io->ask('Please enter database host [db]: ', 'db');
             $db_name = $io->ask('Please enter database name [project_db]: ', 'project_db');
@@ -150,6 +152,7 @@ class Installer
         $file = self::SOURCE_CODE_DIR . 'composer.json';
         $content = file_get_contents($file);
         $content = str_replace('project_name', $projectInfo['name'], $content);
+        $content = str_replace('vendor_name', $projectInfo['vendor'], $content);
         $content = str_replace('project_description', $projectInfo['description'], $content);
         $content = str_replace('author_name', $projectInfo['author'], $content);
         $content = str_replace('author_email@mail.com', $projectInfo['email'], $content);

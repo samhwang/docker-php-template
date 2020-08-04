@@ -1,5 +1,5 @@
 {
-    "name": "project_name",
+    "name": "vendor_name/project_name",
     "description": "project_description",
     "type": "project",
     "license": "MIT",
