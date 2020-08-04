@@ -21,6 +21,11 @@ use Composer\IO\IOInterface;
 class Installer
 {
     /**
+     * @var string SOURCE_CODE_DIR the source code directory
+     */
+    private const SOURCE_CODE_DIR = 'php/';
+
+    /**
      * Post install function
      *
      * @param Event $event - Composer event
@@ -80,9 +85,9 @@ class Installer
      */
     private static function _makeEnvFile(IOInterface $io): void
     {
-        copy('.env.sample', '.env');
-        $env_file = '.env';
-        $env_content = file_get_contents('.env.sample');
+        copy(self::SOURCE_CODE_DIR . '.env.sample', self::SOURCE_CODE_DIR . '.env');
+        $env_file = self::SOURCE_CODE_DIR . '.env';
+        $env_content = file_get_contents(self::SOURCE_CODE_DIR . '.env.sample');
         $db_setup = $io->askConfirmation('Do you want to set up database connection? [y/n] ', false);
         if ($db_setup) {
             $db_host = $io->ask('Please enter database host [db]: ', 'db');
@@ -122,9 +127,9 @@ class Installer
         }
 
         // Add composer.lock back into tracking
-        $ignore_content = file_get_contents('.gitignore');
+        $ignore_content = file_get_contents(self::SOURCE_CODE_DIR . '.gitignore');
         $ignore_content = str_replace("\ncomposer.lock", "", $ignore_content);
-        file_put_contents('.gitignore', $ignore_content);
+        file_put_contents(self::SOURCE_CODE_DIR . '.gitignore', $ignore_content);
 
         exec("git add .; git commit -m \"Initial commit\";");
     }
@@ -139,10 +144,10 @@ class Installer
     private static function _makeNewComposerFile(array $projectInfo): void
     {
         unlink('composer.json');
-        copy('composer.dist.json', 'composer.json');
-        unlink('composer.dist.json');
+        copy(self::SOURCE_CODE_DIR . 'composer.dist.json', self::SOURCE_CODE_DIR . 'composer.json');
+        unlink(self::SOURCE_CODE_DIR . 'composer.dist.json');
 
-        $file = 'composer.json';
+        $file = self::SOURCE_CODE_DIR . 'composer.json';
         $content = file_get_contents($file);
         $content = str_replace('project_name', $projectInfo['name'], $content);
         $content = str_replace('project_description', $projectInfo['description'], $content);
@@ -166,14 +171,14 @@ class Installer
      */
     private static function _renamePackage(string $projectName): void
     {
-        foreach (glob('{src/App/*.php,tests/App/*}', GLOB_BRACE) as $file) {
+        foreach (glob(self::SOURCE_CODE_DIR . '{src/App/*.php,tests/App/*}', GLOB_BRACE) as $file) {
             $content = file_get_contents($file);
             $projectName = self::_convertCamelCase($projectName);
             $content = str_replace('Project_Name', $projectName, $content);
             file_put_contents($file, $content);
         }
 
-        foreach (glob('docker-compose.*') as $dockerComposeFile) {
+        foreach (glob(self::SOURCE_CODE_DIR . 'docker-compose.*') as $dockerComposeFile) {
             $content = file_get_contents($dockerComposeFile);
             $content = str_replace('project_name', strtolower($projectName), $content);
             file_put_contents($dockerComposeFile, $content);
@@ -204,8 +209,8 @@ class Installer
     private static function _build(IOInterface $io): void
     {
         // Install composer dependencies
-        passthru('composer install');
-        exec("git add composer.lock; git commit --amend -m \"Initial commit\"");
+        passthru('cd ' . self::SOURCE_CODE_DIR . '; composer install');
+        exec("git add " . self::SOURCE_CODE_DIR . "composer.lock; git commit --amend -m \"Initial commit\"");
 
         // Build Docker images
         if (`which docker` === false && `which docker-compose` === false) {
@@ -226,14 +231,14 @@ class Installer
      */
     private static function _buildDocker(IOInterface $io): void
     {
-        $dockerfile = '.docker/Dockerfile';
+        $dockerfile = self::SOURCE_CODE_DIR . '.docker/Dockerfile';
 
         $useAlpine = $io->askConfirmation('Do you want to use Alpine OS in the container instead of Debian? [y/N] ', false);
         if ($useAlpine) {
             unlink($dockerfile);
-            rename('.docker/Alpine.Dockerfile', $dockerfile);
+            rename(self::SOURCE_CODE_DIR . '.docker/Alpine.Dockerfile', $dockerfile);
         } else {
-            unlink('.docker/Alpine.Dockerfile');
+            unlink(self::SOURCE_CODE_DIR . '.docker/Alpine.Dockerfile');
         }
 
         $useNginx = $io->askConfirmation('Do you want to use NGINX instead of Apache server? [y/N] ', false);
@@ -245,8 +250,8 @@ class Installer
 
         exec("git add .docker; git commit --amend -m \"Initial commit\"");
 
-        if (!file_exists('.env')) {
-            copy('.env.sample', '.env');
+        if (!file_exists(self::SOURCE_CODE_DIR . '.env')) {
+            copy(self::SOURCE_CODE_DIR . '.env.sample', self::SOURCE_CODE_DIR . '.env');
         }
 
         passthru('docker-compose pull');
