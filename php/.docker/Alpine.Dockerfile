@@ -24,6 +24,7 @@ RUN curl -LkSso /usr/bin/mhsendmail 'https://github.com/mailhog/mhsendmail/relea
     apk update && apk add --no-cache --virtual build-deps ${PHPIZE_DEPS} && \
     pecl install pcov && \
     pecl clear-cache && \
+    docker-php-ext-enable pcov && \
     echo "error_reporting = E_ALL" >> /usr/local/etc/php/php.ini && \
     echo "display_startup_errors = On" >> /usr/local/etc/php/php.ini && \
     echo "display_errors = On" >> /usr/local/etc/php/php.ini && \

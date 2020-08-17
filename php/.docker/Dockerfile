@@ -23,6 +23,7 @@ RUN curl -LkSso /usr/bin/mhsendmail 'https://github.com/mailhog/mhsendmail/relea
     echo 'sendmail_path = "/usr/bin/mhsendmail --smtp-addr=mailhog:1025"' >> /usr/local/etc/php/php.ini && \
     pecl install pcov && \
     pecl clear-cache && \
+    docker-php-ext-enable pcov && \
     echo "error_reporting = E_ALL" >> /usr/local/etc/php/php.ini && \
     echo "display_startup_errors = On" >> /usr/local/etc/php/php.ini && \
     echo "display_errors = On" >> /usr/local/etc/php/php.ini && \
