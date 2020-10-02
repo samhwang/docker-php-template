@@ -27,8 +27,7 @@ RUN pecl install pcov && \
     echo "error_reporting = E_ALL" >> /usr/local/etc/php/php.ini && \
     echo "display_startup_errors = On" >> /usr/local/etc/php/php.ini && \
     echo "display_errors = On" >> /usr/local/etc/php/php.ini && \
-    echo "pcov.directory = /var/www/html/src" >> /usr/local/etc/php/php.ini && \
-    echo "pcov.exclude = /var/www/html/vendor" >> /usr/local/etc/php/php.ini;
+    echo 'pcov.exclude = "~vendor~"' >> /usr/local/etc/php/php.ini;
 
 # Configure SSL
 ENV SSLKey=".docker/ssl/server.key"
